@@ -1,3 +1,14 @@
+const callbackify = promise => (payload, callback) => 
+  promise.then(res=>{
+    callback(null,res)
+  }).catch(e => callback(e))
+
+const promise = new Promise((resolve,reject) => {
+  setTimeout((res)=>resolve(10),1000)
+})
+
+const callbackifyedPromise = callbackify(promise)
+
 const composeAsync = (...fns)=> function(...args) {
   let result = null;
   let err = null;
@@ -44,6 +55,7 @@ const decrement = (payload, callback)=> {
 }
 
 composeAsync(
+  callbackifyedPromise,
   log,
   asyncFunc(1000, increment), 
   log, 
